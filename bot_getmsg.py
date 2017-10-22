@@ -1,4 +1,4 @@
-# 函数功能:查看帮助文档或者列表
+# 函数功能:查看各类帮助文档或者列表
 
 
 def help():
@@ -130,7 +130,7 @@ def jian():
 def killL(list_k):
 	msg = '即将被踢的人名单如下:\n'
 	for user in list_k:
-		msg = msg + '群号%s 成员%s 剩余时间%s\n' % (user[0], user[1], user[2])
+		msg = msg + '群号%s 成员%s 剩余时间%s\n' % (user["group"], user["qq"], user["time"])
 	msg = msg + '上述成员将会在时间结束后得到一张飞机票'
 	return msg
 

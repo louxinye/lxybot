@@ -1,3 +1,4 @@
+# 算法由咩羊提供
 import re
 import random
 

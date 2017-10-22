@@ -1,4 +1,4 @@
-# 带有参数的指令检查系统
+# 带有参数的部分指令检查系统
 import random
 import re
 import bot_sentence
@@ -203,7 +203,7 @@ def smoke(list_g, group, content):
 	return msg
 
 
-# 超星图惩罚指令
+# 解禁指令
 def unsmoke(group, content):
 	check_user = re.match(r'!unsmoke@(.*) ', content)
 	if check_user:

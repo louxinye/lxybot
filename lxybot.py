@@ -421,6 +421,7 @@ def kill_task(bot):
 				del kill_list[i]
 
 
+# 定时任务:每过6分钟，查询user_bp_list所有成员的bp成绩,若有变化则全群通知
 @qqbotsched(minute='0-59/6')
 def bp_check(bot):
 	for num in range(len(user_bp_list)):

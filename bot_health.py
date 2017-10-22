@@ -1,4 +1,4 @@
-# 健康系统
+# 健康系统的添加和去除功能
 import bot_IOfile
 
 

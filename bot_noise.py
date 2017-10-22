@@ -1,4 +1,4 @@
-# 函数功能:检测复读。2代表这是第三位复读者，1代表这是第四位以上复读者，0代表其余情况
+# 函数功能:检测复读。2代表这是第三位复读者，1代表这是第四位以上复读者，0代表该功能没开或者其余情况
 def check(i, list_n, num, content):
 	t = 0
 	if not content:
@@ -17,4 +17,4 @@ def check(i, list_n, num, content):
 			t = 2
 		if num[i] > 3:
 			t = 1
-	return (list_n, num, t)
+	return list_n, num, t

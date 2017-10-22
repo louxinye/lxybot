@@ -4,7 +4,7 @@ import random
 import bot_sentence
 from qqbot import _bot as bot
 
-
+# 适用群号
 bomb_group = '326389728'
 
 

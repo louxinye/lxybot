@@ -2,7 +2,7 @@
 from qqbot import _bot as bot
 
 
-# 函数功能:群号、成员qq号、禁言时间,执行禁言操作
+# 函数功能:群号、成员qq号、禁言时间,执行禁言操作;禁言时间0代表解除禁言
 def shut(group, member, smoke):
 	gl = bot.List('group', group)
 	if gl:

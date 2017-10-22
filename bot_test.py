@@ -1,4 +1,4 @@
-# debug时候用，查看bp监视列表是否出错
+# debug时候用，查看bp监视列表是否出错，一般用于人工纠错
 import bot_IOfile
 
 

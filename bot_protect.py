@@ -1,4 +1,4 @@
-# 保护系统
+# 保护系统的添加和去除功能
 import bot_IOfile
 
 
