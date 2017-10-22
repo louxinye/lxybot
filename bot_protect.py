@@ -8,11 +8,11 @@ def add(list_p, limit, qq):
 		msg = '您已经在保护列表中,无需重复添加'
 	else:
 		for i in range(len(limit)):
-			if qq == limit[i][0]:
-				if limit[i][1] == 0:
+			if qq == limit[i]["qq"]:
+				if limit[i]["limit"] == 0:
 					msg = '今日保护指令次数已用完'
 				else:
-					limit[i][1] = limit[i][1] - 1
+					limit[i]["limit"] = limit[i]["limit"] - 1
 					list_p.append(qq)
 					success = bot_IOfile.write_pkl_data(list_p, 'D:\Python POJ\lxybot\data\data_protect_list.pkl')
 					if success == 1:
@@ -20,7 +20,7 @@ def add(list_p, limit, qq):
 					else:
 						msg = '本地保存失败,请联系dalou,错误代码:11'
 				return list_p, limit, msg
-		limit.append([qq, 1])
+		limit.append({"qq": qq, "limit": 1})
 		list_p.append(qq)
 		success = bot_IOfile.write_pkl_data(list_p, 'D:\Python POJ\lxybot\data\data_protect_list.pkl')
 		if success == 1:

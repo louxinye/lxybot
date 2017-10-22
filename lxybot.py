@@ -9,7 +9,7 @@ import bot_noise
 import bot_bomb
 import bot_msgcheck
 import bot_game
-import bot_get
+import bot_getmsg
 import bot_osu
 from qqbot import qqbotsched
 
@@ -21,11 +21,11 @@ repeat_list = ['message_test', 'message_test', 'message_test']  # 当前正在�
 egg_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # 彩蛋列表, 被解锁则置1
 bomb = 0  # 地雷数量
 allow_bomb = 2  # 允许使用地雷和手雷系统的群代号。需要和适用群对应。
-protect_limit = []  # 保护系统使用次数列表, 里面每个元素代表一个用户。每个用户组成为[qq号, 还可以使用的次数]
+protect_limit = []  # 保护系统使用次数列表, 里面每个元素代表一个用户。每个用户组成为{qq号, 还可以使用的次数}
 game_member = ''  # 正在使用咩羊游戏的玩家qq号
 game_content = [[1, 1], [1, 1]]  # 咩羊游戏初始值
 game_diff = 0  # 咩羊游戏难度
-kill_list = []  # 即将被踢的人列表, 里面的每个元素由[群号，qq号，剩余时间]组成
+kill_list = []  # 即将被踢的人列表, 里面的每个元素由{群号，qq号，剩余时间}组成
 # 恢复关爱列表、保护列表、bp监视列表
 health_list = bot_IOfile.read_pkl_data('D:\Python POJ\lxybot\data\data_health_list.pkl')
 protect_list = bot_IOfile.read_pkl_data('D:\Python POJ\lxybot\data\data_protect_list.pkl')
@@ -33,7 +33,7 @@ user_bp_list = bot_IOfile.read_pkl_data('D:\Python POJ\lxybot\data\data_bp_care_
 # 初始化每个人保护系统的使用次数
 for protect_i in range(len(protect_list)):
 	protect_member_qq = protect_list[protect_i]
-	protect_limit.append([protect_member_qq, 2])
+	protect_limit.append({"qq": protect_member_qq, "limit": 2})
 
 
 def onQQMessage(bot, contact, member, content):
@@ -55,7 +55,7 @@ def onQQMessage(bot, contact, member, content):
 		bot.SendTo(contact, '响应测试成功')
 	# 查看帮助指令!help
 	elif content == '!help':
-		msg = bot_get.help()
+		msg = bot_getmsg.help()
 		bot.SendTo(contact, msg)
 	# 查看适用群指令!group
 	elif content == '!group':
@@ -71,55 +71,55 @@ def onQQMessage(bot, contact, member, content):
 		egg_unlock = 0
 		# 查看地雷相关指令!地雷系统
 		if content == '!地雷系统':
-			msg = bot_get.bomb()
+			msg = bot_getmsg.bomb()
 			bot.SendTo(contact, msg)
 		# 查看手雷相关指令!手雷系统
 		elif content == '!手雷系统':
-			msg = bot_get.diu()
+			msg = bot_getmsg.diu()
 			bot.SendTo(contact, msg)
-		# 查看免疫相关指令!免疫系统
+		# 查看免疫相关指令!保护系统
 		elif content == '!保护系统':
-			msg = bot_get.protect()
+			msg = bot_getmsg.protect()
 			bot.SendTo(contact, msg)
 		# 查看健康相关指令!健康系统
 		elif content == '!健康系统':
-			msg = bot_get.health()
+			msg = bot_getmsg.health()
 			bot.SendTo(contact, msg)
 		# 查看复读相关指令!复读系统
 		elif content == '!复读系统':
-			msg = bot_get.noise()
+			msg = bot_getmsg.noise()
 			bot.SendTo(contact, msg)
 		# 查看监视相关指令!监视系统
 		elif content == '!监视系统':
-			msg = bot_get.jian()
+			msg = bot_getmsg.jian()
 			bot.SendTo(contact, msg)
 		# 查看小游戏相关指令!咩羊游戏
 		elif content == '!咩羊游戏':
-			msg = bot_get.mie()
+			msg = bot_getmsg.mie()
 			bot.SendTo(contact, msg)
 		# 查看踢人列表指令!kill
 		elif content == '!kill':
-			msg = bot_get.killL(kill_list)
+			msg = bot_getmsg.killL(kill_list)
 			bot.SendTo(contact, msg)
 		# 查看关爱列表指令!care
 		elif content == '!care':
-			msg = bot_get.careL(health_list)
+			msg = bot_getmsg.careL(health_list)
 			bot.SendTo(contact, msg)
 		# 查看已经得到的彩蛋指令!egg
 		elif content == '!egg':
-			msg = bot_get.eggL(egg_list)
+			msg = bot_getmsg.eggL(egg_list)
 			bot.SendTo(contact, msg)
 		# 查看无敌列表指令!protect
 		elif content == '!protect':
-			msg = bot_get.protectL(protect_list)
+			msg = bot_getmsg.protectL(protect_list)
 			bot.SendTo(contact, msg)
 		# 查看狗管理指令!dog
 		elif content == '!dog':
-			msg = bot_get.dogL(god_list, dog_list)
+			msg = bot_getmsg.dogL(god_list, dog_list)
 			bot.SendTo(contact, msg)
 		# 查看bp监视列表指令!bp
 		elif content == '!bp':
-			msg = bot_get.bpL(user_bp_list)
+			msg = bot_getmsg.bpL(user_bp_list)
 			bot.SendTo(contact, msg)
 		# 复读指令!repeat
 		elif '!repeat' in content:
@@ -245,7 +245,7 @@ def onQQMessage(bot, contact, member, content):
 				egg_list[6] = 1
 				bot.SendTo(contact, '解锁7号彩蛋')
 				egg_unlock = 1
-		elif ('debug' in content or '断点' in content or 'error' in content or 'warning' in content) and member.qq not in protect_list:
+		elif ('debug' in content or '断点' in content)and member.qq not in protect_list:
 			msg = '程序员真痛苦!'
 			bot.SendTo(contact, msg)
 			if egg_list[7] == 0:
@@ -338,7 +338,8 @@ def onQQMessage(bot, contact, member, content):
 		# 非权限指令,除权限以外所有群员均适用
 		else:
 			# 权限功能检测
-			if content == '!noise' or content == '!stop_n' or content == '埋满地雷' or content == '清除地雷' or '!kill@' in content or '!smoke@' in content:
+			if content == '!noise' or content == '!stop_n' or content == '埋满地雷' or content == '清除地雷'\
+					or '!kill@' in content or '!smoke@' in content:
 				msg = '你没有权限!'
 				bot.SendTo(contact, msg)
 			# 休息指令!rest
@@ -411,11 +412,11 @@ def kill_task(bot):
 	member_num = len(kill_list)
 	if member_num > 0:
 		for i in range(member_num-1, -1, -1):
-			kill_list[i][2] = kill_list[i][2] - 1
-			if kill_list[i][2] == 0:
-				g1 = bot.List('group', kill_list[i][0])
+			kill_list[i]["time"] = kill_list[i]["time"] - 1
+			if kill_list[i]["time"] == 0:
+				g1 = bot.List('group', kill_list[i]["group"])
 				if g1:
-					msg = bot_sentence.kick(kill_list[i][0], kill_list[i][1])
+					msg = bot_sentence.kick(kill_list[i]["group"], kill_list[i]["qq"])
 					bot.SendTo(g1[0], msg)
 				del kill_list[i]
 
@@ -424,37 +425,38 @@ def kill_task(bot):
 def bp_check(bot):
 	for num in range(len(user_bp_list)):
 		user = user_bp_list[num]
-		osu_id = user[20]["user_id"]
-		osu_mode = user[20]["user_mode"]
-		mode_name = bot_osu.get_mode(osu_mode)
-		new_bp = bot_osu.get_bp(osu_id, osu_mode)
+		user_id = user[20]["user_id"]
+		score_mode = user[20]["user_mode"]
+		new_bp = bot_osu.get_bp(user_id, score_mode)
 		if new_bp:
 			for i in range(0, 20):
 				if new_bp[i] != user[i]:
 					msg = 'bp%s有变化' % (i+1)
+					user_name = bot_osu.get_name(user_id)
+					mode_name = bot_osu.get_mode(score_mode)
 					if float(user[i]["pp"]) > float(new_bp[i]["pp"]):
-						user_name = bot_osu.get_name(osu_id)
 						map_id = user[i]["beatmap_id"]
-						map_info = bot_osu.get_map(map_id, osu_mode)
-						mod = bot_osu.get_mod(user[i]["enabled_mods"])
+						map_info = bot_osu.get_map(map_id, score_mode)
+						score_mod = bot_osu.get_mod(user[i]["enabled_mods"])
 						old_pp = float(user[i]["pp"])
-						new_pp = float(bot_osu.get_map_pp(osu_id, map_id, osu_mode))
+						new_pp = float(bot_osu.get_map_pp(user_id, map_id, score_mode))
 						if user_name and map_info and new_pp:
-							msg = '%s倒刷了一张图 (%s)\n被倒刷的谱面bid:%s\n%s\nMod: %s\n倒刷前的pp:%.2f\n现在的pp:%.2f' % (user_name, mode_name, map_id, map_info, mod, old_pp, new_pp)
-							new_bp.append({"user_id": osu_id, "user_name": user_name, "user_mode": osu_mode})
+							msg = '%s倒刷了一张图 (%s)\n被倒刷的谱面bid:%s\n%s\nMod: %s\n倒刷前的pp:%.2f\n现在的pp:%.2f'\
+								% (user_name, mode_name, map_id, map_info, score_mod, old_pp, new_pp)
+							new_bp.append({"user_id": user_id, "user_name": user_name, "user_mode": score_mode})
 							user_bp_list[num] = new_bp
 							bot_IOfile.write_pkl_data(user_bp_list, 'D:\Python POJ\lxybot\data\data_bp_care_list.pkl')
 					else:
-						user_name = bot_osu.get_name(osu_id)
 						map_id = new_bp[i]["beatmap_id"]
-						map_info = bot_osu.get_map(map_id, osu_mode)
-						rank = bot_osu.get_rank(new_bp[i]["rank"])
-						acc = bot_osu.get_acc(new_bp[i]["count300"], new_bp[i]["count100"], new_bp[i]["count50"], new_bp[i]["countmiss"])
-						mod = bot_osu.get_mod(new_bp[i]["enabled_mods"])
-						pp = float(new_bp[i]["pp"])
+						map_info = bot_osu.get_map(map_id, score_mode)
+						score_rank = bot_osu.get_rank(new_bp[i]["rank"])
+						score_acc = bot_osu.get_acc(new_bp[i]["count300"], new_bp[i]["count100"], new_bp[i]["count50"], new_bp[i]["countmiss"])
+						score_mod = bot_osu.get_mod(new_bp[i]["enabled_mods"])
+						score_pp = float(new_bp[i]["pp"])
 						if user_name and map_info:
-							msg = '%s更新了bp%s (%s)\n谱面bid: %s\n%s\n评分: %s\nAcc: %s%%\nMod: %s\npp: %.2f' % (user_name, i+1, mode_name, map_id, map_info, rank, acc, mod, pp)
-							new_bp.append({"user_id": osu_id, "user_name": user_name, "user_mode": osu_mode})
+							msg = '%s更新了bp%s (%s)\n谱面bid: %s\n%s\n评分: %s\nAcc: %s%%\nMod: %s\npp: %.2f'\
+								% (user_name, i+1, mode_name, map_id, map_info, score_rank, score_acc, score_mod, score_pp)
+							new_bp.append({"user_id": user_id, "user_name": user_name, "user_mode": score_mode})
 							user_bp_list[num] = new_bp
 							bot_IOfile.write_pkl_data(user_bp_list, 'D:\Python POJ\lxybot\data\data_bp_care_list.pkl')
 					for group in group_list:

@@ -111,13 +111,13 @@ def kill(list_k, list_g, list_d,  group, content):
 			member1 = bot.List(group1, card)
 			if member1:
 				for i in range(len(list_k)):
-					if group == list_k[i][0] and member1[0].qq == list_k[i][1]:
+					if group == list_k[i]["group"] and member1[0].qq == list_k[i]["qq"]:
 						success = 0
 						break
 				if member1[0].qq in list_g or member1[0].qq in list_d:
 					msg = '你在搞笑吗'
 				elif success == 1:
-					list_k.append([group, member1[0].qq, 60])
+					list_k.append({"group": group, "qq": member1[0].qq, "time": 60})
 					msg = '已获得飞机票,现在进入60分钟遗言时间'
 				else:
 					msg = '这人已经有机票了'
@@ -142,7 +142,7 @@ def stop_k(list_k, group, content):
 			member1 = bot.List(group1, card)
 			if member1:
 				for i in range(len(list_k)):
-					if group == list_k[i][0] and member1[0].qq == list_k[i][1]:
+					if group == list_k[i]["group"] and member1[0].qq == list_k[i]["qq"]:
 						del list_k[i]
 						success = 1
 						break
@@ -192,7 +192,7 @@ def smoke(list_g, group, content):
 				if member1[0].qq in list_g:
 					msg = '你在搞笑吗'
 				else:
-					boom = random.randint(1,100)
+					boom = random.randint(1, 100)
 					msg = bot_sentence.shut(group, member1[0].qq, boom * 60)
 			else:
 				msg = '找不到此人信息'
@@ -227,33 +227,33 @@ def unsmoke(group, content):
 def game(game_content, game_member, member_qq, content):
 	if content == '!game':
 		if game_member:
-			diff = 0
+			level_max = 0
 			msg = '该游戏正在被玩家%s占用,若要停止则需要本人使用!stop_g' % game_member
 		else:
-			diff = 4
+			level_max = 4
 			game_member = member_qq
 			msg = '锁定玩家成功!\n难度: 大神级\nbot目前数字:1 1\n玩家目前数字:1 1'
 			game_content = [[1, 1], [1, 1]]
 	elif '!game ' in content:
 		if game_member:
-			diff = 0
+			level_max = 0
 			msg = '该游戏正在被玩家%s占用,若要停止则需要本人使用!stop_g' % game_member
 		else:
-			(diff, name) = game_diff(content)
-			if diff > 0:
+			(level_max, name) = game_diff(content)
+			if level_max > 0:
 				game_member = member_qq
 				msg = '锁定玩家成功!\n难度: %s\nbot目前数字:1 1\n玩家目前数字:1 1' % name
 				game_content = [[1, 1], [1, 1]]
 			else:
 				msg = '难度输入有误'
 	else:
-		diff = 0
+		level_max = 0
 		msg = '无法识别,bot猜测您是想使用指令!game x(x为参数,缺省值2)'
-	return game_content, game_member, msg, diff
+	return game_content, game_member, msg, level_max
 
 
 def game_diff(content):
-	check_game = re.match(r'!game [12345]',content)
+	check_game = re.match(r'!game [12345]', content)
 	if check_game:
 		t = int(content[6])
 		if t == 1:

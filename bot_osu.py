@@ -151,7 +151,8 @@ def get_map(bid, mode):
 	if len(result) == 0:
 		msg = '谱面不存在'
 	else:
-		msg = '%s - %s [%s]\n难度: %.2f (未计算mod)' % (result[0]["artist"], result[0]["title"], result[0]["version"], float(result[0]["difficultyrating"]))
+		msg = '%s - %s [%s]\n难度: %.2f (未计算mod)'\
+			% (result[0]["artist"], result[0]["title"], result[0]["version"], float(result[0]["difficultyrating"]))
 	return msg
 
 
@@ -171,8 +172,11 @@ def get_map_pp(uid, bid, mode):
 
 # request请求
 def get_url(url, timeout=3):
-	res = requests.get(url, timeout=timeout)
-	return res
+	try:
+		res = requests.get(url, timeout=timeout)
+		return res
+	except requests.exceptions.RequestException:
+		return 0
 
 
 # 评分转化
@@ -192,11 +196,11 @@ def get_acc(num_33, num_22, num_11, num_00):
 	num_100 = int(num_22)
 	num_50 = int(num_11)
 	num_0 = int(num_00)
-	total = 6*(num_300 + num_100 + num_50 + num_0)
-	real = 6*num_300 + 2*num_100 + num_50
+	total = 6 * (num_300 + num_100 + num_50 + num_0)
+	real = 6 * num_300 + 2 * num_100 + num_50
 	if total > 0:
 		acc = real / total
-		msg = '%.2f' % (acc*100)
+		msg = '%.2f' % (acc * 100)
 	else:
 		msg = '???'
 	return msg
